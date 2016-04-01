@@ -14,3 +14,6 @@
 Route::get('/', function () {
     return view('welcome');
 });
+
+Route::post('/impact_point' , 'ImpactController@impact');
+Route::get('/impact_point' , 'ImpactController@impact');

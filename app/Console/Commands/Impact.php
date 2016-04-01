@@ -25,6 +25,11 @@ class Impact extends Command
      */
     protected $description = 'Run Impact Service';
 
+
+    private $rabbit = false;
+
+    private $interest = false;
+
     /**
      * Execute the console command.
      *
@@ -34,13 +39,58 @@ class Impact extends Command
     {
         $this->comment("init the impact");
 
-        $rabbit = RabbitMq::makeConnection(Config::get('impact'));
+        $this->rabbit = RabbitMq::makeConnection(Config::get('impact'));
 
-        if ($rabbit->getStatus()){
+        $this->interest = new Interest();
+
+        if ($this->rabbit->getStatus()){
+
+            $this->rabbit->getNews(
+                array($this, 'prepareMessageResponse')
+            );
+
+            while (count($this->rabbit->getChannel()->callbacks)) {
+                $this->rabbit->getChannel()->wait();
+            }
 
         }else{
             $this->error('Connection Unsuccess');
         }
 
+    }
+
+    public function prepareMessageResponse($message = false){
+
+        $return = false;
+
+        if ($message){
+                
+            $return = json_decode($message->body, true);
+
+            if (json_last_error() == JSON_ERROR_NONE && is_array($return)){
+                
+                $return['status'] = 1;
+
+                if (
+                    $this->rabbit->canOperate($return) && 
+                    $this->rabbit->response($this->interest->exec($return))
+                ){
+
+                    $message->delivery_info['channel']->basic_ack($message->delivery_info['delivery_tag']); 
+                }
+
+            }else{
+                $this->error($message->body);
+                $return = array('status' => 1);
+            }
+
+
+            $this->info(json_encode($return));  
+        
+        }
+
+
+
+        return json_encode($return);
     }
 }
