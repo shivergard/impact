@@ -27,8 +27,7 @@ class RabbitMq {
                     $config['host'], 
                     5672, 
                     $config['user'], 
-                    $config['password'],
-                    $config['user']
+                    $config['password']
                 )
             );
 
@@ -38,8 +37,9 @@ class RabbitMq {
             $newRabbit->setQueue($config['queue']);
 
 
-        } catch (ErrorException $e) {
+        } catch (PhpAmqpLib\Exception\AMQPRuntimeException $e) {
             //no error just returns failed rabbit
+            dd($e);
         }
 
         
@@ -92,9 +92,9 @@ class RabbitMq {
 
     public function getNews($callBack){
 
-        if (!$this->queue_declared){
-            $this->declareQueue();
-        }
+        //if (!$this->queue_declared){
+        //    $this->declareQueue();
+        //}
 
         $this->channel->basic_consume($this->queue, Config::get('app.name') , false, false, false, false, $callBack);
 
@@ -119,8 +119,8 @@ class RabbitMq {
         if (is_array($response)){
             $return = true; 
             $response['token'] = Config::get('app.name');
-            $message = new AMQPMessage(json_encode($response), array('content_type' => 'text/plain', 'delivery_mode' => AMQPMessage::DELIVERY_MODE_PERSISTENT));
-            $this->channel->basic_publish($message, $this->queue);
+            $message = new AMQPMessage(json_encode($response), array('content_type' => 'application/json', 'delivery_mode' => AMQPMessage::DELIVERY_MODE_PERSISTENT));
+            $this->channel->basic_publish($message, '', 'solved-'.$this->queue);
         }
 
         return $return;
@@ -133,8 +133,8 @@ class RabbitMq {
             $this->channel->confirm_select();
         }
 
-        $message = new AMQPMessage(json_encode($news), array('content_type' => 'text/plain', 'delivery_mode' => AMQPMessage::DELIVERY_MODE_PERSISTENT));
-        $this->channel->basic_publish($message, $this->queue);
+        $message = new AMQPMessage(json_encode($news), array('content_type' => 'application/json', 'delivery_mode' => AMQPMessage::DELIVERY_MODE_PERSISTENT));
+        $this->channel->basic_publish($message, '' ,$this->queue);
 
     }
 
