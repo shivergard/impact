@@ -7,6 +7,8 @@ use Illuminate\Console\Command;
 use App\Helpers\RabbitMq;
 use App\Helpers\Interest;
 
+use Config;
+
 class Impact extends Command
 {
     /**
@@ -31,5 +33,14 @@ class Impact extends Command
     public function handle()
     {
         $this->comment("init the impact");
+
+        $rabbit = RabbitMq::makeConnection(Config::get('impact'));
+
+        if ($rabbit->getStatus()){
+
+        }else{
+            $this->error('Connection Unsuccess');
+        }
+
     }
 }
