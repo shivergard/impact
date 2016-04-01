@@ -61,7 +61,18 @@ class Interest {
         //Interest is calculated per day as a percentage from the original amount 
         $days = isset($data['days']) ? $data['days'] : 0 ;
 
-        if (!isset($data['sum']) || intval($data['sum']) <= 0 || intval($days) <= 0)
+        if (
+            !isset($data['sum']) || 
+            intval($data['sum']) <= 0 || 
+            intval($days) <= 0 || 
+            intval($days) >= 17155 
+            /** http://www.santander.co.uk/uk/loans take loans from 18 
+                Retirement age - GOV.UK. Trade unions and workers rights.
+                    Retirement age. Default retirement age (formerly 65) has been phased out - most people can now work for as long as they want to.
+
+                65 - 18 = 47yrs == 17155
+            **/
+            )
             return false;
 
         $interestTotal = 0;
