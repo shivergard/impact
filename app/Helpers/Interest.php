@@ -61,7 +61,7 @@ class Interest {
         //Interest is calculated per day as a percentage from the original amount 
         $days = isset($data['days']) ? $data['days'] : 0 ;
 
-        if (!isset($data['sum']) || intval($days) <= 0)
+        if (!isset($data['sum']) || intval($data['sum']) <= 0 || intval($days) <= 0)
             return false;
 
         $interestTotal = 0;
