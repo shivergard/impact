@@ -64,14 +64,12 @@ class Impact extends Command
         $return = false;
 
         if ($message){
-                
+            
             $return = json_decode($message->body, true);
 
-            if (json_last_error() == JSON_ERROR_NONE && is_array($return)){
-                
-                $return['status'] = 1;
+            $responsed = false;
 
-                $responsed = false;
+            if (json_last_error() == JSON_ERROR_NONE && is_array($return)){
 
                 if (
                     $this->rabbit->canOperate($return) && 
@@ -88,9 +86,10 @@ class Impact extends Command
                 $return = array('status' => 1);
             }
 
-
-            $this->info(json_encode($return));  
-        
+            if ($responsed)
+                $this->info(json_encode($return));  
+            else
+                $this->error(json_encode($return));
         }
 
 
