@@ -22,6 +22,16 @@ RabbitMQ:
 [Rabbit on DigitalOcean](https://www.digitalocean.com/community/tutorials/how-to-install-and-manage-rabbitmq)
 
 
+#Install
+in .env Define Rabbitmq data
+
+Run artisan command
+``` php artisan impact ``` to lisen for calculation requests
+
+``` php artisan impact:provide ``` to sent test data for calculation
+
+
+
 # Laravel PHP Framework
 
 [![Build Status](https://travis-ci.org/laravel/framework.svg)](https://travis-ci.org/laravel/framework)
