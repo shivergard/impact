@@ -71,9 +71,13 @@ class Impact extends Command
                 
                 $return['status'] = 1;
 
+                $responsed = false;
+
                 if (
                     $this->rabbit->canOperate($return) && 
-                    $this->rabbit->response($this->interest->exec($return))
+                    ($responsed = $this->interest->exec($return)) &&
+                    $responsed &&
+                    $this->rabbit->response($responsed)
                 ){
 
                     $message->delivery_info['channel']->basic_ack($message->delivery_info['delivery_tag']); 

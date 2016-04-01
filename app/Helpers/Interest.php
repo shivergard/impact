@@ -65,6 +65,12 @@ class Interest {
 
         //$data['interest_amount'] = array();
 
+        if (intval($days) <= 0){
+            $days = 1;
+            return;
+        }
+            
+
         while ($days > 0) {
 
             $interestPercent = $this->getInterestPercent($days);
