@@ -38,10 +38,11 @@ class ImpactProvider extends Command
 
             $impacting = true;
 
+
             $rabbit->postNews(
                 array(
-                    'sum' => rand(1 , 5000) , 
-                    'days' => rand(1 , 150)
+                    'sum' => 123,//rand(1 , 5000) , 
+                    'days' => 5 //rand(1 , 150)
                 )
             );
 
