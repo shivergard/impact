@@ -59,16 +59,14 @@ class Interest {
     public function exec($data){
 
         //Interest is calculated per day as a percentage from the original amount 
-        $days = $data['days'];
+        $days = isset($data['days']) ? $data['days'] : 0 ;
+
+        if (!isset($data['sum']) || intval($days) <= 0)
+            return false;
 
         $interestTotal = 0;
 
         //$data['interest_amount'] = array();
-
-        if (intval($days) <= 0){
-            $days = 1;
-            return;
-        }
             
 
         while ($days > 0) {
