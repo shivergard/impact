@@ -18,7 +18,8 @@ Reattach the screen
 screen -r
 ```
 
-
+RabbitMQ:
+[Rabbit on DigitalOcean](https://www.digitalocean.com/community/tutorials/how-to-install-and-manage-rabbitmq)
 
 
 # Laravel PHP Framework
