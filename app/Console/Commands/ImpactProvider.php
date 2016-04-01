@@ -38,7 +38,12 @@ class ImpactProvider extends Command
 
             $impacting = true;
 
-            $rabbit->postNews(array('status' => 5 , 'mini' => 2));
+            $rabbit->postNews(
+                array(
+                    'sum' => rand(1 , 5000) , 
+                    'days' => rand(1 , 150)
+                )
+            );
 
             $rabbit->exitCon();
 
