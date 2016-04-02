@@ -36,7 +36,7 @@ class ImpactController extends Controller
             $applicantModel->save();            
         }
 
-        if (!($applicantModel->status == 1 || Carbon::now()->diffInHours($applicantModel->created_at) <= 48)){
+        if ($applicantModel->status == 1 || Carbon::now()->diffInHours($applicantModel->created_at) <= 48){
             return redirect()->action('ImpactController@applicant' , array('ident' , $applicantModel->creditals ));
         }else{
             return redirect()->action('ImpactController@fail');
@@ -87,7 +87,7 @@ class ImpactController extends Controller
             Cache::get('last_updated') && 
             !Cookie::get(md5(Cache::get('last_updated')))
             ){
-            $last_updated = Cookie::make(md5(Cache::get('last_updated')), 'has', 10);
+            $last_updated = Cookie::make(md5(Cache::get('last_updated')), 'has', 2);
             Cookie::queue($last_updated);
             $return = json_decode(Cache::get('last_updated'));
             
