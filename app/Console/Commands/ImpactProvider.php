@@ -118,7 +118,7 @@ class ImpactProvider extends Command
 
             $lastAct = false;
 
-            if (!$lastAct || (time()-$lastAct > 10)){
+            if (!$lastAct || (time()-$lastAct > 30)){
                 $lastAct = time();
                 $this->publishNews(true);
                 $this->publishNews();

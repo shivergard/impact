@@ -12,7 +12,7 @@ use App\Helpers\Interest;
 
 use Config;
 use Cache;
-use Cookie;
+use Session;
 
 class ImpactController extends Controller
 {
@@ -85,10 +85,13 @@ class ImpactController extends Controller
 
         if (
             Cache::get('last_updated') && 
-            !Cookie::get(md5(Cache::get('last_updated')))
+            (
+                !Session::get(md5(Cache::get('last_updated'))) ||
+                strtotime(!Session::get(md5(Cache::get('last_updated')))) - time() > 120
+            )
             ){
-            $last_updated = Cookie::make(md5(Cache::get('last_updated')), 'has', 2);
-            Cookie::queue($last_updated);
+            
+            $last_updated = Session::set(md5(Cache::get('last_updated')), date('d-m-Y h:i:s'));
             $return = json_decode(Cache::get('last_updated'));
             
         }
