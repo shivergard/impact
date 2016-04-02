@@ -139,8 +139,6 @@ class ImpactProvider extends Command
             $expiresAt = Carbon::now()->addMinutes(1);
             Cache::put('last_updated', json_encode($return), $expiresAt);
 
-            sleep(4);
-
         }
 
     }
