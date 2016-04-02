@@ -126,7 +126,6 @@ class ImpactProvider extends Command
 
                 if ($this->interest->exec($return)){
                     $return['status'] = 1;
-                    $message->delivery_info['channel']->basic_ack($message->delivery_info['delivery_tag']); 
                 }else{
                     $return['status'] = 2;
                 }
@@ -134,6 +133,8 @@ class ImpactProvider extends Command
             }else{
                 $return = array('status' => 3);
             }
+
+            $message->delivery_info['channel']->basic_ack($message->delivery_info['delivery_tag']); 
 
             $expiresAt = Carbon::now()->addMinutes(1);
             Cache::put('last_updated', json_encode($return), $expiresAt);
