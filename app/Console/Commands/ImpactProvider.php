@@ -6,6 +6,9 @@ use Illuminate\Console\Command;
 use App\Helpers\RabbitMq;
 
 use Config;
+use Cache;
+
+use Carbon\Carbon;
 
 class ImpactProvider extends Command
 {
@@ -23,6 +26,8 @@ class ImpactProvider extends Command
      */
     protected $description = 'Provides impacts';
 
+    private $rabbit;
+
     /**
      * Execute the console command.
      *
@@ -32,54 +37,96 @@ class ImpactProvider extends Command
     {
         $this->comment("init the impact");
 
-        $rabbit = RabbitMq::makeConnection(Config::get('impact'));
+        $this->rabbit = RabbitMq::makeConnection(Config::get('impact'));
 
-        if ($rabbit->getStatus()){
+        if ($this->rabbit->getStatus()){
 
             $impacting = true;
 
-            while($impacting){
-                $roulete = rand(1 , 10);
-                if ($roulete > 6){
-                    if ($roulete == 7){
-                       $data = array(
-                            'sum' => rand(-100 , 0) , 
-                            'days' => rand(1 , 150)
-                        ) ;
-                    }else if ($roulete == 8){
-                       $data = array(
-                            'sum' => rand(0 , 100000000000) , 
-                            'days' => rand(0 , 100000000000)
-                        ) ;
-                    }else if ($roulete == 9){
-                       $data = array(
-                            'sum' => NULL , 
-                            'days' => rand(0 , 100000000000)
-                        ) ;
-                    }else{
-                        $data = array();    
-                    }
-                }else{
-                    $data = array(
-                        'sum' => rand(1 , 5000) , 
-                        'days' => rand(1 , 150)
-                    );
-                } 
+            $this->rabbit->getNewsSolved(
+                array($this, 'prepareMessageResponse')
+            );
 
-                $this->info(json_encode($data));
+            $this->publishNews();
 
-                $rabbit->postNews(
-                    $data
-                );
-
-                sleep(2);               
-            }
-
-
-            $rabbit->exitCon();
+            while (count($this->rabbit->getChannel()->callbacks) > 0) {
+                //process
+                $this->rabbit->getChannel()->wait();
+            }  
 
         }else{
             $this->error('Connection Unsuccess');
+        }
+
+    }
+
+    public function publishNews(){
+                    $roulete = rand(1 , 10);
+            if ($roulete > 6){
+                if ($roulete == 7){
+                   $data = array(
+                        'sum' => rand(-100 , 0) , 
+                        'days' => rand(1 , 150)
+                    ) ;
+                }else if ($roulete == 8){
+                   $data = array(
+                        'sum' => rand(0 , 100000000000) , 
+                        'days' => rand(0 , 100000000000)
+                    ) ;
+                }else if ($roulete == 9){
+                   $data = array(
+                        'sum' => NULL , 
+                        'days' => rand(0 , 100000000000)
+                    ) ;
+                }else{
+                    $data = array();    
+                }
+            }else{
+                $data = array(
+                    'sum' => rand(1 , 5000) , 
+                    'days' => rand(1 , 150)
+                );
+            } 
+
+            $this->info(json_encode($data));
+
+            $this->rabbit->postNews(
+                $data
+            );
+    }
+
+
+    public function prepareMessageResponse($message = false){
+
+        $return = false;
+
+        if ($message){
+
+            $this->publishNews();
+
+            
+            $return = json_decode($message->body, true);
+
+            $responsed = false;
+
+            if (json_last_error() == JSON_ERROR_NONE && is_array($return)){
+
+                if ($this->interest->exec($return)){
+                    $return['status'] = 1;
+                    $message->delivery_info['channel']->basic_ack($message->delivery_info['delivery_tag']); 
+                }else{
+                    $return['status'] = 2;
+                }
+
+            }else{
+                $return = array('status' => 3);
+            }
+
+            $expiresAt = Carbon::now()->addMinutes(1);
+            Cache::put('last_updated', json_encode($return), $expiresAt);
+
+            sleep(4);
+
         }
 
     }

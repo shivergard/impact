@@ -1,7 +1,5 @@
 
-        tr.valid {
-            background: #363
-        }
+        tr.valid {}
 
         tr.invalid {
           background: red;

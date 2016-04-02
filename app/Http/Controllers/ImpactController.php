@@ -56,7 +56,7 @@ class ImpactController extends Controller
 
             if ($applicantsModel->status == 1 || Carbon::now()->diffInHours($applicantsModel->created_at) <= 48){
 
-                $deadline =  Carbon::now()->addDays(2);
+                $deadline =  $applicantsModel->created_at->addDays(2);
 
                 return view('welcome' , array('deadline' => $deadline , 'identified' => true));
 
@@ -71,23 +71,16 @@ class ImpactController extends Controller
 
 
     public function ajaxResponseGet(){
-        $this->rabbit = RabbitMq::makeConnection(Config::get('impact'));
 
-        $this->interest = new Interest();
+        $return = array('status' => 0);
 
-        if ($this->rabbit->getStatus()){
-
-            $this->rabbit->getNewsSolved(
-                array($this, 'prepareMessageResponse')
-            );
-
-            while (count($this->rabbit->getChannel()->callbacks) > 0) {
-                $this->rabbit->getChannel()->wait();
-            }
-
+        if (Cache::get('last_updated') &&  Cookie::get(md5(Cache::get('last_updated')))){
+            Cookie::make(md5(Cache::get('last_updated')), 'has', 10);
+            $return = json_decode(Cache::get('last_updated'));
+            
         }
 
-        return response()->json(array('status' => 0));
+        return response()->json($return);
     }
 
     public function prepareMessageResponse($message = false){
