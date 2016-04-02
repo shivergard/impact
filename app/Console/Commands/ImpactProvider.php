@@ -32,6 +32,8 @@ class ImpactProvider extends Command
 
     private $interest = false;
 
+    private $lastAct = false;
+
     /**
      * Execute the console command.
      *
@@ -112,10 +114,15 @@ class ImpactProvider extends Command
 
         $return = false;
 
-        if ($message){
+        if ($message){  
 
-            $this->publishNews(true);
-            $this->publishNews();
+
+            if (!$lastAct || (time()-$lastAct > 10)){
+                $lastAct = time();
+                $this->publishNews(true);
+                $this->publishNews();
+            }
+
 
             
             $return = json_decode($message->body, true);
