@@ -38,13 +38,43 @@ class ImpactProvider extends Command
 
             $impacting = true;
 
+            while($impacting){
+                $roulete = rand(1 , 10);
+                if ($roulete > 6){
+                    if ($roulete == 7){
+                       $data = array(
+                            'sum' => rand(-100 , 0) , 
+                            'days' => rand(1 , 150)
+                        ) ;
+                    }else if ($roulete == 8){
+                       $data = array(
+                            'sum' => rand(0 , 100000000000) , 
+                            'days' => rand(0 , 100000000000)
+                        ) ;
+                    }else if ($roulete == 9){
+                       $data = array(
+                            'sum' => NULL , 
+                            'days' => rand(0 , 100000000000)
+                        ) ;
+                    }else{
+                        $data = array();    
+                    }
+                }else{
+                    $data = array(
+                        'sum' => rand(1 , 5000) , 
+                        'days' => rand(1 , 150)
+                    );
+                } 
 
-            $rabbit->postNews(
-                array(
-                    'sum' => 123,//rand(1 , 5000) , 
-                    'days' => 5 //rand(1 , 150)
-                )
-            );
+                $this->info(json_encode($data));
+
+                $rabbit->postNews(
+                    $data
+                );
+
+                sleep(2);               
+            }
+
 
             $rabbit->exitCon();
 

@@ -16,7 +16,7 @@
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet">
 
     <!-- Custom styles for this template -->
-    <link href="cover.css" rel="stylesheet">
+    <link href="/cover.css" rel="stylesheet">
   </head>
 
   <body>
@@ -187,7 +187,30 @@
             }
 
             $( document ).ready(function() {
-                initializeClock('clockdiv', {{$deadline}});
+                initializeClock('clockdiv', "{{explode(" " , $deadline)[0] }}");
+
+                setInterval(function(){
+                $.getJSON("/ajax", function(result){
+
+                randomClassName = Math.floor((Math.random() * 100) + 1);
+
+                $("#monitor").prepend(
+                    $("<tr>").addClass('classic_' + randomClassName).addClass(result.status ==1 ? "valid" : "invalid")
+                        
+                        .append($("<td>").text(result.token))
+                        .append($("<td>").text(result.days))
+                        .append($("<td>").text(result.sum))
+                        .append($("<td>").text(result.interest))
+                        .append($("<td>").text(result.totalSum))
+                        .delay(7000).queue(function(next){
+                            $(this).remove();
+                            next();
+                        })
+                    );
+                });
+
+
+                }, 1000);
             });
 
 

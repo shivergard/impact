@@ -27,7 +27,8 @@ class RabbitMq {
                     $config['host'], 
                     5672, 
                     $config['user'], 
-                    $config['password']
+                    $config['password'],
+                    ($config['host'] == 'fox.rmq.cloudamqp.com' ? $config['user'] : false)
                 )
             );
 
@@ -76,10 +77,15 @@ class RabbitMq {
 
     private function declareQueue(){
 
+        //declare simple
         $this->channel->queue_declare($this->queue, false, true, false, false);
-
         $this->channel->exchange_declare($this->queue, 'direct', false, true, false);
         $this->channel->queue_bind($this->queue, $this->queue);
+
+        //declare solved
+        $this->channel->queue_declare('solved-'.$this->queue, false, true, false, false);
+        $this->channel->queue_bind('solved-'.$this->queue, $this->queue);
+
 
         register_shutdown_function(
             array($this, 'exitCon'), 
@@ -99,6 +105,12 @@ class RabbitMq {
         $this->channel->basic_consume($this->queue, Config::get('app.name') , false, false, false, false, $callBack);
 
     }
+
+    public function getNewsSolved($callBack){
+
+        $this->channel->basic_consume('solved-'.$this->queue, Config::get('app.name') , false, false, false, false, $callBack);
+
+    }    
 
     public function canOperate($message){
         $return = false;

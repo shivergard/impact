@@ -4,7 +4,9 @@
         }
 
         tr.invalid {
-            background: #633
+          background: red;
+          border: 1px solid #B7B7B7;
+          border-bottom-color: red;
         }
 
         ol {
