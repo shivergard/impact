@@ -170,6 +170,7 @@
 
             <p align="right">Bad person who took this idea:
                 <b><a href="skype:icw.work">Ronalds Sovas</a></b>
+                <!-- https://www.google.lv/?gws_rd=cr,ssl&ei=R6L_VqHwO4SzsQGmkoC4AQ#q=site:http:%2F%2Fimpact.ccat.eu%2F site did not have any coopyright notices and it is possibl to find it in Google-->
             </p>
         </div>
 
