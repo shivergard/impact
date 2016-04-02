@@ -1,0 +1,19 @@
+
+        tr.valid {
+            background: #363
+        }
+
+        tr.invalid {
+            background: #633
+        }
+
+        ol {
+            counter-reset: section;
+            list-style-type: none;
+        }
+
+        ol li:before {
+            counter-increment: section;
+            content: counters(section, ".") ". ";
+        }
+

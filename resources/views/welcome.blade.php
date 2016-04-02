@@ -1,45 +1,188 @@
+
 <!DOCTYPE html>
-<html>
-    <head>
-        <title>Laravel</title>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <meta name="description" content="">
+    <meta name="author" content="">
+    
 
-        <link href="https://fonts.googleapis.com/css?family=Lato:100" rel="stylesheet" type="text/css">
+    <title>Skill Test</title>
 
-        <style>
-            html, body {
-                height: 100%;
-            }
+    <!-- Bootstrap core CSS -->
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet">
 
-            body {
-                margin: 0;
-                padding: 0;
-                width: 100%;
-                display: table;
-                font-weight: 100;
-                font-family: 'Lato';
-            }
+    <!-- Custom styles for this template -->
+    <link href="cover.css" rel="stylesheet">
+  </head>
 
-            .container {
-                text-align: center;
-                display: table-cell;
-                vertical-align: middle;
-            }
+  <body>
 
-            .content {
-                text-align: center;
-                display: inline-block;
-            }
+<div class="container">
+    <div class="page-header">
+        <h1>Queue test task</h1>
+    </div>
+    @if (isset($identified))
+    <div class="panel panel-default" style="height:473px;">
 
-            .title {
-                font-size: 96px;
-            }
-        </style>
-    </head>
-    <body>
-        <div class="container">
-            <div class="content">
-                <div class="title">Laravel 5</div>
-            </div>
+        <div class="panel-heading">
+            Queue Monitor
         </div>
-    </body>
+        <table class="table">
+            <thead>
+            <tr>
+                <th>Token</th>
+                <th>Time</th>
+                <th>Amount</th>
+                <th>Interest</th>
+                <th>Total amount</th>
+            </tr>
+            </thead>
+            <tbody id="monitor">
+
+            </tbody>
+        </table>
+    </div>
+    @endif
+    
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            Task
+        </div>
+        <div class="panel-body">
+            <h2>Task</h2>
+
+            <p>Create a small service which does the following:</p>
+
+            <ol>
+                <li>Connects to AMQP (RabbitMQ) server (details below)</li>
+                <li>Listens on <b>'interest-queue'</b> queue in default exchange for messages</li>
+                <li>For each message it calculates the "interest" and total sum by formula given below</li>
+                <li>Broadcast the new messages to <b>'solved-interest-queue'</b> in the same exchange</li>
+            </ol>
+
+            <p>If everything is done correctly you should be able to see the messages popping up in the display table
+                above.</p>
+
+            <h2>Interest formula</h2>
+
+            <ol>
+                <li>Interest is calculated based on <i>sum</i> and <i>days</i> fields</li>
+                <li>Interest is calculated per day as a percentage from the original amount</li>
+                <li>If day is...
+                    <ol>
+                        <li>divisible by three, the interest is: <b>1%</b></li>
+                        <li>divisible by five, the interest is: <b>2%</b></li>
+                        <li>divisible by both three and five, the interest is: <b>3%</b></li>
+                        <li>not divisible by either three or five, interest is: <b>4%</b></li>
+                    </ol>
+                </li>
+                <li>Each day interest amount is rounded to two digits</li>
+                <li>Final interest is a sum of all days interests</li>
+                <li>Total sum is the sum of original amount and total interest</li>
+            </ol>
+
+
+            <h2>Message Format</h2>
+
+            <p>Messages are transmitted as JSON.</p>
+
+            <p>Incoming messages will look like following:<code>{ sum: 123, days: 5 }</code></p>
+
+            <p>Outgoing messages should look like following:<code>{ sum: 123, days: 5, interest: 18.45, totalSum:
+                141.45, token: "myIdentifier" }</code></p>
+
+            <p>Token will be displayed on the monitor above for clarity when several services are running at the same time.
+                Use your name, nick, or something else clever.</p>
+
+            <h2>AMQP server (RabbitMQ) details</h2>
+
+            <p>
+                <form>
+
+                <fieldset class="form-group">
+                    <label for="exampleInputEmail1">Email address</label>
+                    <input type="email" class="form-control" id="exampleInputEmail1" placeholder="Enter email">
+                    <small class="text-muted">We'll never share your email with anyone else.</small>
+                  </fieldset>
+                  <fieldset class="form-group">
+                    <label for="exampleInputPassword1">Password</label>
+                    <input type="password" class="form-control" id="exampleInputPassword1" placeholder="Password">
+                  </fieldset>
+
+
+                <fieldset class="form-group">
+                  <span class="input-group-addon" id="basic-addon1">@</span>
+                  <input 
+                        type="text" 
+                        class="form-control" 
+                        placeholder="Name" 
+                        aria-describedby="basic-addon1">
+                </fieldset>
+
+                <fieldset class="form-group">
+                  <input 
+                        type="text" 
+                        class="form-control" 
+                        placeholder="Server url" 
+                        aria-describedby="basic-addon1">
+                </fieldset>
+
+                <fieldset class="form-group">
+                  <input 
+                        type="text" 
+                        class="form-control" 
+                        placeholder="Server user name" 
+                        aria-describedby="basic-addon1">
+                </fieldset>
+
+                <fieldset class="form-group">
+                  <input 
+                        type="text" 
+                        class="form-control" 
+                        placeholder="Server Password" 
+                        aria-describedby="basic-addon1">
+                </fieldset>
+
+                <fieldset class="form-group">
+                <label for="basic-url">GitHub Repozitory URL</label>
+                <div class="input-group">
+                  <span class="input-group-addon" id="basic-addon3">https://github.com/</span>
+                  <input type="text" class="form-control" id="basic-url" aria-describedby="basic-addon3">
+                </fieldset>
+
+                <button type="button" class="btn btn-danger">Identify Your Self and Start Test</button>
+            </form>
+            </p>
+
+            <h2>References</h2>
+
+            <ul>
+                <li><a href="https://www.rabbitmq.com/">https://www.rabbitmq.com/</a></li>
+            </ul>
+
+            <p align="right">Guess contacts of original author:
+                <b><a href="skype:myjar.jaan.pullerits">Jaan Pullerits</a></b>
+            </p>
+
+            <p align="right">Bad person who took this idea:
+                <b><a href="skype:icw.work">Ronalds Sovas</a></b>
+            </p>
+        </div>
+
+    </div>
+</div>
+<br><br>
+
+</div>
+
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+  </body>
 </html>
