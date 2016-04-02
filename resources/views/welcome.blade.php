@@ -29,7 +29,8 @@
     <div class="panel panel-default" style="height:473px;">
 
         <div class="panel-heading">
-            Queue Monitor
+            Queue Monitor 
+            <div id="clockdiv"></div>
         </div>
         <table class="table">
             <thead>
@@ -99,24 +100,28 @@
                 Use your name, nick, or something else clever.</p>
 
             <h2>AMQP server (RabbitMQ) details</h2>
+            @if (isset($identified))
+                <p>
+                    <b>Server:</b> {{ Config::get('impact.host')}}<br>
+                    <b>User:</b> {{ Config::get('impact.user')}}<br>
+                    <b>Password:</b> {{ Config::get('impact.password')}}<br>
+                </p>
 
+
+            @else
             <p>
-                <form>
+                <form method="post" >
 
                 <fieldset class="form-group">
                     <label for="exampleInputEmail1">Email address</label>
-                    <input type="email" class="form-control" id="exampleInputEmail1" placeholder="Enter email">
+                    <input name="email" type="email" class="form-control" id="exampleInputEmail1" placeholder="Enter email">
                     <small class="text-muted">We'll never share your email with anyone else.</small>
                   </fieldset>
-                  <fieldset class="form-group">
-                    <label for="exampleInputPassword1">Password</label>
-                    <input type="password" class="form-control" id="exampleInputPassword1" placeholder="Password">
-                  </fieldset>
-
 
                 <fieldset class="form-group">
                   <span class="input-group-addon" id="basic-addon1">@</span>
                   <input 
+                        name="name"
                         type="text" 
                         class="form-control" 
                         placeholder="Name" 
@@ -124,39 +129,18 @@
                 </fieldset>
 
                 <fieldset class="form-group">
-                  <input 
-                        type="text" 
-                        class="form-control" 
-                        placeholder="Server url" 
-                        aria-describedby="basic-addon1">
-                </fieldset>
-
-                <fieldset class="form-group">
-                  <input 
-                        type="text" 
-                        class="form-control" 
-                        placeholder="Server user name" 
-                        aria-describedby="basic-addon1">
-                </fieldset>
-
-                <fieldset class="form-group">
-                  <input 
-                        type="text" 
-                        class="form-control" 
-                        placeholder="Server Password" 
-                        aria-describedby="basic-addon1">
-                </fieldset>
-
-                <fieldset class="form-group">
                 <label for="basic-url">GitHub Repozitory URL</label>
                 <div class="input-group">
                   <span class="input-group-addon" id="basic-addon3">https://github.com/</span>
-                  <input type="text" class="form-control" id="basic-url" aria-describedby="basic-addon3">
+                  <input type="text" name="github" class="form-control" id="basic-url" aria-describedby="basic-addon3">
                 </fieldset>
 
-                <button type="button" class="btn btn-danger">Identify Your Self and Start Test</button>
+                <input type="hidden" name="_token" value="{{ csrf_token() }}">
+                
+                <button type="submit" class="btn btn-danger">Identify Your Self and Start Test</button>
             </form>
             </p>
+            @endif
 
             <h2>References</h2>
 
@@ -185,5 +169,29 @@
     <!-- Placed at the end of the document so the pages load faster -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+    <script type="text/javascript">
+        @if (isset($deadline))
+
+            function initializeClock(id, endtime){
+              var clock = document.getElementById(id);
+              var timeinterval = setInterval(function(){
+                var t = getTimeRemaining(endtime);
+                clock.innerHTML = 'days: ' + t.days + '<br>' +
+                                  'hours: '+ t.hours + '<br>' +
+                                  'minutes: ' + t.minutes + '<br>' +
+                                  'seconds: ' + t.seconds;
+                if(t.total<=0){
+                  clearInterval(timeinterval);
+                }
+              },1000);
+            }
+
+            $( document ).ready(function() {
+                initializeClock('clockdiv', {{$deadline}});
+            });
+
+
+        @endif
+    </script>
   </body>
 </html>
