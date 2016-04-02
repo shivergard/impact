@@ -17,7 +17,7 @@ Route::get('/', function () {
 
 Route::post('/' , 'ImpactController@startImpact');
 Route::get('/impact_point' , 'ImpactController@impact');
-Route::get('/fail' , 'ImpactController@fail');
+Route::get('/fail/{?hours}' , 'ImpactController@fail');
 Route::get('/tst/{ident}' , 'ImpactController@applicant');
 Route::get('/ajax' , 'ImpactController@ajaxResponseGet');
 

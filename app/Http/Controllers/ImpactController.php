@@ -39,12 +39,12 @@ class ImpactController extends Controller
         if ($applicantModel->status == 1 || Carbon::now()->diffInHours($applicantModel->created_at) <= 48){
             return redirect()->action('ImpactController@applicant' , array('ident' , $applicantModel->creditals ));
         }else{
-            return redirect()->action('ImpactController@fail');
+            return redirect()->action('ImpactController@fail', array('hours' => Carbon::now()->diffInHours($applicantModel->created_at)));
         }
 
     }
 
-    public function fail(){
+    public function fail($hours = false){
         return 'You have no rights to be here ...';
     }
 
