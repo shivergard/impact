@@ -77,7 +77,7 @@ class ImpactController extends Controller
         $return = array(
             'status' => 0 , 
             'upd' => Cache::get('last_updated') , 
-            'cookie' => Cookie::get(md5(Cache::get('last_updated'))) , 
+            'cookie' => Session::get(md5(Cache::get('last_updated'))) , 
             'key' => md5(Cache::get('last_updated'))
         );
 
