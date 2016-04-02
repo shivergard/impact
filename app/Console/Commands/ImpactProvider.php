@@ -116,6 +116,7 @@ class ImpactProvider extends Command
 
         if ($message){  
 
+            $lastAct = false;
 
             if (!$lastAct || (time()-$lastAct > 10)){
                 $lastAct = time();
