@@ -194,21 +194,23 @@
 
                 randomClassName = Math.floor((Math.random() * 100) + 1);
 
-                $("#monitor").prepend(
-                    $("<tr>").addClass('classic_' + randomClassName).addClass(result.status ==1 ? "valid" : "invalid")
-                        
-                        .append($("<td>").text(result.token))
-                        .append($("<td>").text(result.days))
-                        .append($("<td>").text(result.sum))
-                        .append($("<td>").text(result.interest))
-                        .append($("<td>").text(result.totalSum))
-                        .delay(7000).queue(function(next){
-                            $(this).remove();
-                            next();
-                        })
-                    );
+                if (result.status > 0){
+                    $("#monitor").prepend(
+                        $("<tr>").addClass('classic_' + randomClassName).addClass(result.status ==1 ? "valid" : "invalid")
+                            
+                            .append($("<td>").text(result.token))
+                            .append($("<td>").text(result.days))
+                            .append($("<td>").text(result.sum))
+                            .append($("<td>").text(result.interest))
+                            .append($("<td>").text(result.totalSum))
+                            .delay(7000).queue(function(next){
+                                $(this).remove();
+                                next();
+                            })
+                        );
+                    }
                 });
-
+                
 
                 }, 1000);
             });

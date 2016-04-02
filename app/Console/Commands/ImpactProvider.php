@@ -4,6 +4,7 @@ namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
 use App\Helpers\RabbitMq;
+use App\Helpers\Interest;
 
 use Config;
 use Cache;
@@ -28,6 +29,9 @@ class ImpactProvider extends Command
 
     private $rabbit;
 
+
+    private $interest = false;
+
     /**
      * Execute the console command.
      *
@@ -41,13 +45,15 @@ class ImpactProvider extends Command
 
         if ($this->rabbit->getStatus()){
 
+            $this->interest = new Interest();
+
             $impacting = true;
 
             $this->rabbit->getNewsSolved(
                 array($this, 'prepareMessageResponse')
             );
 
-            $this->publishNews();
+            $this->publishNews(true);
 
             while (count($this->rabbit->getChannel()->callbacks) > 0) {
                 //process
@@ -60,8 +66,14 @@ class ImpactProvider extends Command
 
     }
 
-    public function publishNews(){
-                    $roulete = rand(1 , 10);
+    public function publishNews($valid = false){
+        
+            if ($valid)
+                $roulete = 1;
+            else    
+                $roulete = rand(1 , 10);
+
+            
             if ($roulete > 6){
                 if ($roulete == 7){
                    $data = array(
@@ -102,6 +114,7 @@ class ImpactProvider extends Command
 
         if ($message){
 
+            $this->publishNews(true);
             $this->publishNews();
 
             

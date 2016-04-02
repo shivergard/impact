@@ -11,6 +11,8 @@ use App\Helpers\RabbitMq;
 use App\Helpers\Interest;
 
 use Config;
+use Cache;
+use Cookie;
 
 class ImpactController extends Controller
 {
@@ -72,15 +74,28 @@ class ImpactController extends Controller
 
     public function ajaxResponseGet(){
 
-        $return = array('status' => 0);
+        $return = array(
+            'status' => 0 , 
+            'upd' => Cache::get('last_updated') , 
+            'cookie' => Cookie::get(md5(Cache::get('last_updated'))) , 
+            'key' => md5(Cache::get('last_updated'))
+        );
 
-        if (Cache::get('last_updated') &&  Cookie::get(md5(Cache::get('last_updated')))){
-            Cookie::make(md5(Cache::get('last_updated')), 'has', 10);
+        $last_updated = false;
+
+        if (
+            Cache::get('last_updated') && 
+            !Cookie::get(md5(Cache::get('last_updated')))
+            ){
+            $last_updated = Cookie::make(md5(Cache::get('last_updated')), 'has', 10);
+            Cookie::queue($last_updated);
             $return = json_decode(Cache::get('last_updated'));
             
         }
 
-        return response()->json($return);
+        $response = response();
+
+        return $response->json($return);
     }
 
     public function prepareMessageResponse($message = false){
