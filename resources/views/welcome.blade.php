@@ -191,10 +191,10 @@
               var clock = document.getElementById(id);
               var timeinterval = setInterval(function(){
                 var t = getTimeRemaining(endtime);
-                clock.innerHTML = 'days: ' + t.days + '/' +
-                                  'hours: '+ t.hours + '/' +
-                                  'minutes: ' + t.minutes + '/' +
-                                  'seconds: ' + t.seconds;
+                clock.innerHTML = 'Task must be finished in  ' + t.days + ' days ' +
+                                  ' '+ t.hours + ' hours ' +
+                                  ' ' + t.minutes + ' minutes and ' +
+                                  ' ' + t.seconds + ' seconds';
                 if(t.total<=0){
                   clearInterval(timeinterval);
                 }
@@ -202,7 +202,7 @@
             }
 
             $( document ).ready(function() {
-                initializeClock('clockdiv', "{{explode(" " , $deadline)[0] }}");
+                initializeClock('clockdiv', "{{ $deadline }}");
 
                 setInterval(function(){
                 $.getJSON("/ajax", function(result){
