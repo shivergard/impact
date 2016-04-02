@@ -191,9 +191,9 @@
               var clock = document.getElementById(id);
               var timeinterval = setInterval(function(){
                 var t = getTimeRemaining(endtime);
-                clock.innerHTML = 'days: ' + t.days + '<br>' +
-                                  'hours: '+ t.hours + '<br>' +
-                                  'minutes: ' + t.minutes + '<br>' +
+                clock.innerHTML = 'days: ' + t.days + '/' +
+                                  'hours: '+ t.hours + '/' +
+                                  'minutes: ' + t.minutes + '/' +
                                   'seconds: ' + t.seconds;
                 if(t.total<=0){
                   clearInterval(timeinterval);

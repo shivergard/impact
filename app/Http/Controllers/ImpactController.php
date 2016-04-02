@@ -58,7 +58,7 @@ class ImpactController extends Controller
 
             if ($applicantsModel->status == 1 || Carbon::now()->diffInHours($applicantsModel->created_at) <= 48){
 
-                $deadline =  $applicantsModel->created_at->addDays(2);
+                $deadline =  $applicantsModel->created_at->addHours(48);
 
                 return view('welcome' , array('deadline' => $deadline , 'identified' => true));
 
