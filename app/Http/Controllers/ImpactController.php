@@ -60,7 +60,7 @@ class ImpactController extends Controller
 
                 $deadline =  $applicantsModel->created_at->addHours(48);
 
-                return view('welcome' , array('deadline' => $deadline , 'identified' => true));
+                return view('welcome' , array('deadline' => $deadline , 'identified' => true , 'agent_id' => $ident));
 
             }
 
