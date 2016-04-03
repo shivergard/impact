@@ -47,11 +47,9 @@ class AgencyCheck extends Command
 
                 $impacting = true;
 
-                $this->rabbit->getNewsSolved(
+                $this->rabbit->getNews(
                     array($this, 'prepareMessageResponse')
                 );
-
-                $this->publishNews(true);
 
                 while (count($this->rabbit->getChannel()->callbacks) > 0) {
                     //process
@@ -79,23 +77,28 @@ class AgencyCheck extends Command
 
                 $processed = false;
 
-                if ($return['action'] == 'create_test'){
+                if (isset($return['action']) && $return['action'] == 'create_test'){
                     $testResponse = $this->agency->prepareTest($return);
+
+                    $this->info('response to action');
+                    $this->info(json_encode($testResponse));
+
                     if ($testResponse)
                         $processed = $this->rabbit->response($testResponse);    
                 }
                 
 
                 if ($processed){
+                    $this->info($message->body);
                     $message->delivery_info['channel']->basic_ack($message->delivery_info['delivery_tag']); 
+                }else{
+                    $this->error($message->body);
                 }
 
             }else{
                 $this->error($message->body);
                 $return = array('status' => 1);
             }
-
-            $this->info(json_encode($return));  
             
         }
 
