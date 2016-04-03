@@ -27,7 +27,7 @@ class ImpactProvider extends Command
      *
      * @var string
      */
-    protected $description = 'Provides impacts';
+    protected $description = 'Provides impact';
 
     private $rabbit;
 
@@ -43,7 +43,7 @@ class ImpactProvider extends Command
      */
     public function handle()
     {
-        $this->comment("init the impact");
+        $this->comment("init the impact provider");
 
         $this->rabbit = RabbitMq::makeConnection(Config::get('impact'));
 

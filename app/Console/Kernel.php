@@ -14,7 +14,8 @@ class Kernel extends ConsoleKernel
      */
     protected $commands = [
          Commands\Impact::class,
-         Commands\ImpactProvider::class
+         Commands\ImpactProvider::class,
+         Commands\AgencyCheck::class
     ];
 
     /**
