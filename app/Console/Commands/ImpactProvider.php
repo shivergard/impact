@@ -6,6 +6,8 @@ use Illuminate\Console\Command;
 use App\Helpers\RabbitMq;
 use App\Helpers\Interest;
 
+use App\Applicants;
+
 use Config;
 use Cache;
 
@@ -132,14 +134,27 @@ class ImpactProvider extends Command
 
             if (json_last_error() == JSON_ERROR_NONE && is_array($return)){
 
-                if ($this->interest->exec($return)){
-                    $return['status'] = 1;
-                }else{
-                    $return['status'] = 2;
+                // validate token - select all active apllicants
+                $applicant = Applicants::where('creditals' , str_replace("agent_", "", $return['token']));
+
+                if ($applicant->count() > 0){
+
+                    $applicantModel = $applicant->first();
+
+                    if ($applicantModel->status == 1 || Carbon::now()->diffInHours($applicantModel->created_at) <= 48){
+                        if ($this->interest->exec($return)){
+                            $return['status'] = 1;
+                        }else{
+                            $return['status'] = 2;
+                        }
+                    }else{
+                        $return['status'] = 0;
+                    }
+
                 }
 
             }else{
-                $return = array('status' => 3);
+                $return = array('status' => 0);
             }
 
             $message->delivery_info['channel']->basic_ack($message->delivery_info['delivery_tag']); 
