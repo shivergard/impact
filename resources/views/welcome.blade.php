@@ -65,6 +65,8 @@
                 <li>Broadcast the new messages to <b>'solved-interest-queue'</b> in the same exchange</li>
             </ol>
 
+            @if (isset($identified))
+
             <p>If everything is done correctly you should be able to see the messages popping up in the display table
                 above.</p>
 
@@ -94,13 +96,13 @@
             <p>Incoming messages will look like following:<code>{ sum: 123, days: 5 }</code></p>
 
             <p>Outgoing messages should look like following:<code>{ sum: 123, days: 5, interest: 18.45, totalSum:
-                141.45, token: "myIdentifier" }</code></p>
+                141.45, token: "agent_{{$agent_id}}" }</code></p>
 
             <p>Token will be displayed on the monitor above for clarity when several services are running at the same time.
-                Use your name, nick, or something else clever.</p>
+                Use token "agent_{{$agent_id}}".</p>
 
             <h2>AMQP server (RabbitMQ) details</h2>
-            @if (isset($identified))
+            
                 <p>
                     <b>Server:</b> {{ Config::get('impact.host')}}<br>
                     <b>User:</b> {{ Config::get('impact.user')}}<br>
@@ -109,6 +111,7 @@
 
 
             @else
+            <h2>Apply for Test</h2>
             <p>
                 <form method="post" >
 
@@ -119,7 +122,6 @@
                   </fieldset>
 
                 <fieldset class="form-group">
-                  <span class="input-group-addon" id="basic-addon1">@</span>
                   <input 
                         name="name"
                         type="text" 
@@ -147,15 +149,6 @@
             <ul>
                 <li><a href="https://www.rabbitmq.com/">https://www.rabbitmq.com/</a></li>
             </ul>
-
-            <p align="right">Guess contacts of original author:
-                <b><a href="skype:myjar.jaan.pullerits">Jaan Pullerits</a></b>
-            </p>
-
-            <p align="right">Bad person who took this idea:
-                <b><a href="skype:icw.work">Ronalds Sovas</a></b>
-                <!-- https://www.google.lv/?gws_rd=cr,ssl&ei=R6L_VqHwO4SzsQGmkoC4AQ#q=site:http:%2F%2Fimpact.ccat.eu%2F site did not have any coopyright notices and it is possibl to find it in Google-->
-            </p>
         </div>
 
     </div>
