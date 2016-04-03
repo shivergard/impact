@@ -57,7 +57,7 @@ class Agency {
 
         }else{
             $applicantModel = new Applicants();
-            $applicantModel->git_url = $request['ident'];
+            $applicantModel->git_url = $applicantModel->name = $applicantModel->email = $request['ident'];
             $applicantModel->creditals = str_random(10);
 
             $applicantModel->save();
