@@ -11,9 +11,7 @@
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
+Route::get('/' , 'ImpactController@home');
 
 Route::post('/' , 'ImpactController@startImpact');
 Route::get('/impact_point' , 'ImpactController@impact');

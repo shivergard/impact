@@ -17,6 +17,12 @@ use Session;
 class ImpactController extends Controller
 {
 
+
+    public function home(){
+        return view('welcome');
+    }
+
+
     public function startImpact(){
         $return = Input::all();
 
@@ -39,7 +45,7 @@ class ImpactController extends Controller
         if ($applicantModel->status == 1 || Carbon::now()->diffInHours($applicantModel->created_at) <= 48){
             return redirect()->action('ImpactController@applicant' , array('ident' => $applicantModel->creditals ));
         }else{
-            return redirect()->action('ImpactController@fail', array('hours' => Carbon::now()->diffInHours($applicantModel->created_at)));
+            return redirect()->action('ImpactController@home', array('hours' => Carbon::now()->diffInHours($applicantModel->created_at)));
         }
 
     }
@@ -58,16 +64,20 @@ class ImpactController extends Controller
 
             if ($applicantsModel->status == 1 || Carbon::now()->diffInHours($applicantsModel->created_at) <= 48){
 
+                Session::set('creditals' , $ident);
+
                 $deadline =  $applicantsModel->created_at->addHours(48);
 
                 return view('welcome' , array('deadline' => $deadline , 'identified' => true , 'agent_id' => $ident));
 
+            }else{
+                Session::forget('creditals');
             }
 
 
         }
 
-        return redirect()->action('ImpactController@fail' , array('hours' => $ident));
+        return redirect()->action('ImpactController@home' , array('hours' => $ident));
         
     }
 
