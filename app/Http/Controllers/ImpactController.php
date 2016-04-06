@@ -19,6 +19,9 @@ class ImpactController extends Controller
 
 
     public function home(){
+        if (Session::has('creditals')){
+            return redirect()->action('ImpactController@applicant' , array('ident' => Session::get('creditals') ));
+        }
         return view('welcome');
     }
 
